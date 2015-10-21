@@ -1,0 +1,26 @@
+@(title: String = "Welcome!")
+
+@import play.api.Play.current
+
+@main(title) {
+
+  <h2>Welcome to RuFan</h2>
+
+  @if(session.get("username")) {
+    <div class="table-responsive">
+        <table class="table">
+          <tr><td>Display Name:</td><td>@{session.get("displayName")}</td>
+          </tr>
+          <tr>
+            <td>Username:</td><td>@{session.get("username")}</td>
+          </tr>
+          <tr>
+            <td>Email:</td><td>@{session.get("email")}</td>
+          </tr>
+        </table>
+    </div>
+
+  } else {
+    Not Logged In.
+  }
+}
