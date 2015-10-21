@@ -1,8 +1,8 @@
-@(title: String = "Welcome!")
+@(teams: List[is.rufan.team.domain.Team])
 
 @import play.api.Play.current
 
-@main(title) {
+@main("Rufan - Profile") {
 
   <h2>Welcome to RuFan</h2>
 
@@ -19,6 +19,13 @@
           </tr>
         </table>
     </div>
+
+    <label>Pick Your Favorite Team</label>
+    <select class="form-control">
+      @for(team <- teams){
+        <option>@team.getDisplayName</option>
+      }
+    </select>
 
   } else {
     Not Logged In.
