@@ -15,3 +15,17 @@ server.pid
 *.eml
 /dist/
 .cache
+RufanWeb/.idea
+RufanWeb/target
+RufanWeb/out
+RufanWeb/logs
+*.ipr
+*.iws
+*.11
+/out/
+RufanWeb/out
+RufanWeb/tmp
+RufanWeb/project/project
+RufanWeb/project/target
+RufanWeb/server.pid
+
