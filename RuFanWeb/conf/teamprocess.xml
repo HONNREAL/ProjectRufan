@@ -18,7 +18,8 @@
 
         <bean id="teamReader" class="is.rufan.team.process.TeamReader">
             <property name="URI">
-                <value>http://olafurandri.com/honn/teams.json</value></property>
+                <value>http://olafurandri.com/honn/teams.json</value>
+            </property>
         </bean>
 
     </beans>
