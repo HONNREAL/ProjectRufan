@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <beans>
+        <bean id="processContext" class="is.ruframework.process.RuProcessContext">
+            <property name="processName">
+                <value>TeamImportProcess</value>
+            </property>
+            <property name="importURL">
+                <value>http://olafurandri.com/honn/teams.json</value>
+            </property>
+            <property name="processClass">
+                <value>is.rufan.team.process.TeamImportProcess</value>
+            </property>
+        </bean>
+
+        <bean id="teamReader" class="is.rufan.team.process.TeamReader">
+            <property name="URI">
+                <value>http://olafurandri.com/honn/teams.json</value></property>
+        </bean>
+
+    </beans>
+
+</beans>
+
