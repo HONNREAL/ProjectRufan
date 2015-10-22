@@ -1,0 +1,22 @@
+@(tournaments: List[is.rufan.team.domain.Tournament])
+
+@import play.api.Play.current
+
+@main("Rufan - Tournaments") {
+
+  <h2>All Tournaments</h2>
+
+  @if(session.get("username")) {
+    <div class="table-responsive">
+      <table class="table">
+      @for(tournament <- tournaments){
+        <tr><td>Name: @tournament.getName</td><td>Fee: @tournament.getEntryFee</td></tr>
+      }
+      </table>
+    </div>
+
+
+  } else {
+    Not Logged In.
+  }
+}
