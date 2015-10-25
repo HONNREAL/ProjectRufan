@@ -29,4 +29,9 @@ public class ProfileController extends UserController {
 
         return ok(profile.render(teams));
     }
+
+    public Result update()
+    {
+
+    }
 }
