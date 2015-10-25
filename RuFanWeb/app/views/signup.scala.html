@@ -35,45 +35,7 @@
                 '_error -> signupForm.globalError
             )
         </fieldset>
-        //Credit card
-        <fieldset>
-            <legend>Credit card information</legend>
-            @inputRadioGroup(
-                signupForm("creditCardType"),
-                options = Seq("Visa" -> "Visa", "Mastercard" -> "Mastercard"),
-                '_label -> "Credit card type",
-                '_error -> "Please choose a card type"
-            )
-            @inputText(
-                signupForm("creditCardNumber"),
-                '_label -> "Credit card number",
-                '_help -> "Type your credit card number",
-                '_error -> signupForm.globalError
-            )
-            <dl class="">
-                <dt><label for="creditCardExpDate">Card expiration date</label></dt>
-                <dd>
-                    <label >Month</label>
-                    <select name="cardMonth">
-                    @for(i <- 1 to 12 ) {
-                        @if(i < 10) {
-                            options += "<option value="month"> 0@i</option>";
-                        } else {
-                            options += "<option value="month">@i</option>";
-                        }
-                    }
-                    </select>
-                </dd>
-                <dd>
-                    <label >Year</label>
-                    <select name="cardYear">
-                        @for(i <- 15 to 20 ){
-                            options += "<option value="year">@i</option>";
-                        }
-                    </select>
-                </dd>
-            </dl>
-        </fieldset>
+
         <fieldset>
         @checkbox(
             signupForm("accept"),

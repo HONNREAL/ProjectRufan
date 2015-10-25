@@ -50,7 +50,7 @@ public class SignupController extends UserController
     {
       filledForm.reject("password", "The password is too short");
     }
-
+    /*
     if (filledForm.field("creditCardNumber").value().length() < 16)
     {
       filledForm.reject("creditCardNumber", "The card number is too short");
@@ -60,6 +60,7 @@ public class SignupController extends UserController
     {
       filledForm.reject("creditCardType", "Please choose a card type");
     }
+    */
 
     if (filledForm.hasErrors())
     {
