@@ -25,13 +25,24 @@
         </td>
         </tr>
         <tr>
-          <td>FavTeamID</td><td>
-        @user.getFavTeamId
+          <td>Favorite Team</td><td>
+          @if(!user.getFavTeamId.equals(0)) {
+            @for(team <- teams) {
+              @if(team.getTeamId.equals(user.getFavTeamId)){
+                @team.getDisplayName
+              }
+            }
+          }
         </td>
         </tr>
         <tr>
           <td>Creditcard Number</td><td>
-        ************@cc
+          @if(!cc.contains(' ')){
+            @for(i <- 1 to 3){
+              @for(i <- 1 to 4) {<span class="glyphicon glyphicon-asterisk"></span>}
+            }
+            <span id="cardnumber">@cc</span>
+          }
         </td>
         </tr>
         <tr>
@@ -49,6 +60,7 @@
 
       <select class="form-control" name="favteam">
         <option value="-">-</option>
+        <option value="0">None</option>
       @for(team <- teams) {
         <option value="@team.getTeamId">@team.getDisplayName</option>
       }
@@ -83,6 +95,7 @@
               }
             }
             </select>
+
           </dd>
           <dd>
             <label >Year</label>
@@ -94,6 +107,12 @@
             </select>
           </dd>
         </dl>
+        @inputText(
+          signupForm("securityCode"),
+          '_label -> "SSC",
+          '_help -> "Type your credit card security code",
+          '_error -> signupForm.globalError
+        )
       </fieldset>
 
       <div class="actions">
