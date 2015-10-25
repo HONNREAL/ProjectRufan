@@ -1,4 +1,4 @@
-@(teams: List[is.rufan.team.domain.Team], signupForm: Form[is.rufan.user.domain.UserRegistration], user: is.rufan.user.domain.User)
+@(teams: List[is.rufan.team.domain.Team], signupForm: Form[is.rufan.user.domain.UserRegistration], user: is.rufan.user.domain.User, cc: String)
 
 @import play.api.Play.current
 @import helper._
@@ -25,8 +25,29 @@
         </td>
         </tr>
         <tr>
-          <td>FavTeamID</td><td>
-        @user.getFavTeamId
+          <td>Favorite Team</td><td>
+          @if(!user.getFavTeamId.equals(0)) {
+            @for(team <- teams) {
+              @if(team.getTeamId.equals(user.getFavTeamId)){
+                @team.getDisplayName
+              }
+            }
+          }
+        </td>
+        </tr>
+        <tr>
+          <td>Creditcard Number</td><td>
+          @if(!cc.contains(' ')){
+            @for(i <- 1 to 3){
+              @for(i <- 1 to 4) {<span class="glyphicon glyphicon-asterisk"></span>}
+            }
+            <span id="cardnumber">@cc</span>
+          }
+        </td>
+        </tr>
+        <tr>
+          <td>Expiration Date</td><td>
+          @user.getCardMonth / @user.getCardYear
         </td>
         </tr>
       </table>
@@ -37,9 +58,11 @@
         <legend>Favorite Team</legend>
       <label>Pick Your Favorite Team</label>
 
-      <select class="form-control">
+      <select class="form-control" name="favteam">
+        <option value="-">-</option>
+        <option value="0">None</option>
       @for(team <- teams) {
-        <option>@team.getDisplayName</option>
+        <option value="@team.getTeamId">@team.getDisplayName</option>
       }
       </select>
       </fieldset>
@@ -63,6 +86,7 @@
           <dd>
             <label >Month</label>
             <select name="cardMonth">
+              <option value="-">-</option>
             @for(i <- 1 to 12) {
               @if(i < 10) {
                 options += "<option value="@i"> 0@i</option>";
@@ -71,23 +95,24 @@
               }
             }
             </select>
+
           </dd>
           <dd>
             <label >Year</label>
             <select name="cardYear">
+              <option value="-">-</option>
             @for(i <- 15 to 20) {
               options += "<option value="@i">@i</option>";
             }
             </select>
           </dd>
         </dl>
-      </fieldset>
-      <fieldset>
-      @checkbox(
-        signupForm("accept"),
-        '_label -> None, '_text -> "You agree to the Terms and conditions",
-        '_showConstraints -> false
-      )
+        @inputText(
+          signupForm("securityCode"),
+          '_label -> "SSC",
+          '_help -> "Type your credit card security code",
+          '_error -> signupForm.globalError
+        )
       </fieldset>
 
       <div class="actions">

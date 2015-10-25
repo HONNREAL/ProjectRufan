@@ -9,7 +9,7 @@
                 <value>GameImportProcess</value>
             </property>
             <property name="importURL">
-                <value>http://olafurandri.com/honn/teams.json</value>
+                <value>http://olafurandri.com/honn/fixtures.json</value>
             </property>
             <property name="processClass">
                 <value>is.rufan.team.process.GameImportProcess</value>

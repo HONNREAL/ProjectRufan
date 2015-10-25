@@ -9,9 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Result;
-import views.html.index;
 import views.html.profile;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static play.data.Form.*;
@@ -27,6 +27,8 @@ public class ProfileController extends UserController {
 
     public Result index()
     {
+        String lastcardnum = "                ";
+
         TeamService teamService = (TeamService) tctx.getBean("teamService");
         List<Team> teams = teamService.getTeams();
 
@@ -34,11 +36,14 @@ public class ProfileController extends UserController {
         User user = service.getUserByUsername(session().get("username"));
         session().put("email", user.getEmail());
 
-        return ok(profile.render(teams, signupForm, user));
+        if(user.getCardNumber() != null){
+            lastcardnum = user.getCardNumber();
+        }
+
+        return ok(profile.render(teams, signupForm, user, lastcardnum.substring(12)));
     }
 
-    public Result update()
-    {
+    public Result update() {
         Form<UserRegistration> filledForm = signupForm.bindFromRequest();
         UserService service = (UserService) ctx.getBean("userService");
         User user = service.getUserByUsername(session().get("username"));
@@ -46,25 +51,64 @@ public class ProfileController extends UserController {
         TeamService teamService = (TeamService) tctx.getBean("teamService");
         List<Team> teams = teamService.getTeams();
 
-        if (filledForm.field("cardNumber").value().length() != 16)
-        {
-            filledForm.reject("cardNumber", "The card number is not 16 digits");
-        }
-        else{
-            user.setCardNumber(filledForm.get().getCardNumber());
+        String lastcardnum = "                ";
+        if (!filledForm.field("cardNumber").value().isEmpty()
+                || !filledForm.field("securityCode").value().isEmpty()
+                || !filledForm.field("cardMonth").value().toString().equals("-")
+                || !filledForm.field("cardYear").value().toString().equals("-")) {
+
+            if (filledForm.field("cardNumber").value().isEmpty()||
+                    filledForm.field("cardNumber").value().length() != 16 ||
+                    !filledForm.field("cardNumber").value().matches("[0-9]{16}")){
+                filledForm.reject("cardNumber", "Card number invalid.");
+            }
+
+            if (filledForm.field("securityCode").value().isEmpty() ||
+                    filledForm.field("securityCode").value().length() != 3 ||
+                    !filledForm.field("securityCode").value().matches("[0-9]{3}")){
+                filledForm.reject("securityCode", "Security Code invalid.");
+            }
+
+            if (filledForm.field("cardMonth").value().toString().equals("-")) {
+                filledForm.reject("cardNumber", "No month selected.");
+            }
+
+            if (filledForm.field("cardYear").value().toString().equals("-")) {
+                filledForm.reject("cardNumber", "No year selected.");
+            }
+
+            if (!filledForm.hasErrors())
+            {
+                user.setCardNumber(filledForm.get().getCardNumber());
+                user.setCardMonth(filledForm.field("cardMonth").value().toString());
+                user.setCardYear(filledForm.field("cardYear").value().toString());
+                user.setSecurityCode(filledForm.field("securityCode").value().toString());
+            }
+         }
+
+        if(!filledForm.field("favteam").value().toString().equals("-")) {
+            int favTeamId = 0;
+            try{
+                favTeamId = Integer.parseInt(filledForm.field("favteam").value());
+            }catch(Exception e){
+                //return badRequest(profile.render(teams, filledForm, user));
+            }
+            user.setFavTeamId(favTeamId);
 
         }
 
-
+        if(user.getCardNumber() != null){
+            lastcardnum = user.getCardNumber();
+        }
 
         if (filledForm.hasErrors())
         {
-            return badRequest(profile.render(teams, filledForm, user));
+            return badRequest(profile.render(teams, filledForm, user, lastcardnum.substring(12)));
         }
         else
         {
             service.updateUser(user);
-            return ok(profile.render(teams, signupForm, user));
+            return ok(profile.render(teams, signupForm, user, lastcardnum.substring(12)));
         }
 
 
