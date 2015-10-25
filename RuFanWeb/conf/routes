@@ -10,6 +10,7 @@ GET         /login               controllers.LoginController.blank()
 POST        /login               controllers.LoginController.login()
 GET         /logout              controllers.LoginController.logout()
 GET         /profile             controllers.ProfileController.index()
+POST        /profile             controllers.SignupController.update()
 GET         /tournaments         controllers.TournamentController.index()
 
 
