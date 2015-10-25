@@ -9,9 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Result;
-import views.html.index;
 import views.html.profile;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static play.data.Form.*;
@@ -34,7 +34,7 @@ public class ProfileController extends UserController {
         User user = service.getUserByUsername(session().get("username"));
         session().put("email", user.getEmail());
 
-        return ok(profile.render(teams, signupForm, user));
+        return ok(profile.render(teams, signupForm, user, user.getCardNumber().substring(12)));
     }
 
     public Result update()
@@ -48,23 +48,41 @@ public class ProfileController extends UserController {
 
         if (filledForm.field("cardNumber").value().length() != 16)
         {
-            filledForm.reject("cardNumber", "The card number is not 16 digits");
+            //filledForm.reject("cardNumber", "The card number is not 16 digits");
         }
         else{
             user.setCardNumber(filledForm.get().getCardNumber());
 
         }
 
+        if(!filledForm.field("cardMonth").value().toString().equals("-"))
+        {
+            user.setCardMonth(filledForm.field("cardMonth").value().toString());
+        }
 
+        if(!filledForm.field("cardYear").value().toString().equals("-")) {
+            user.setCardYear(filledForm.field("cardYear").value().toString());
+        }
+
+        if(!filledForm.field("favteam").value().toString().equals("-")) {
+            int favTeamId = 0;
+            try{
+                favTeamId = Integer.parseInt(filledForm.field("favteam").value());
+            }catch(Exception e){
+                //return badRequest(profile.render(teams, filledForm, user));
+            }
+            user.setFavTeamId(favTeamId);
+
+        }
 
         if (filledForm.hasErrors())
         {
-            return badRequest(profile.render(teams, filledForm, user));
+            return badRequest(profile.render(teams, filledForm, user, user.getCardNumber().substring(12)));
         }
         else
         {
             service.updateUser(user);
-            return ok(profile.render(teams, signupForm, user));
+            return ok(profile.render(teams, signupForm, user, user.getCardNumber().substring(12)));
         }
 
 

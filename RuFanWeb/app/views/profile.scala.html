@@ -1,4 +1,4 @@
-@(teams: List[is.rufan.team.domain.Team], signupForm: Form[is.rufan.user.domain.UserRegistration], user: is.rufan.user.domain.User)
+@(teams: List[is.rufan.team.domain.Team], signupForm: Form[is.rufan.user.domain.UserRegistration], user: is.rufan.user.domain.User, cc: String)
 
 @import play.api.Play.current
 @import helper._
@@ -29,6 +29,16 @@
         @user.getFavTeamId
         </td>
         </tr>
+        <tr>
+          <td>Creditcard Number</td><td>
+        ************@cc
+        </td>
+        </tr>
+        <tr>
+          <td>Expiration Date</td><td>
+          @user.getCardMonth / @user.getCardYear
+        </td>
+        </tr>
       </table>
     </div>
 
@@ -37,9 +47,10 @@
         <legend>Favorite Team</legend>
       <label>Pick Your Favorite Team</label>
 
-      <select class="form-control">
+      <select class="form-control" name="favteam">
+        <option value="-">-</option>
       @for(team <- teams) {
-        <option>@team.getDisplayName</option>
+        <option value="@team.getTeamId">@team.getDisplayName</option>
       }
       </select>
       </fieldset>
@@ -63,11 +74,12 @@
           <dd>
             <label >Month</label>
             <select name="cardMonth">
+              <option value="-">-</option>
             @for(i <- 1 to 12) {
               @if(i < 10) {
-                options += "<option value="month"> 0@i</option>";
+                options += "<option value="@i"> 0@i</option>";
               } else {
-                options += "<option value="month">@i</option>";
+                options += "<option value="@i">@i</option>";
               }
             }
             </select>
@@ -75,19 +87,13 @@
           <dd>
             <label >Year</label>
             <select name="cardYear">
+              <option value="-">-</option>
             @for(i <- 15 to 20) {
-              options += "<option value="year">@i</option>";
+              options += "<option value="@i">@i</option>";
             }
             </select>
           </dd>
         </dl>
-      </fieldset>
-      <fieldset>
-      @checkbox(
-        signupForm("accept"),
-        '_label -> None, '_text -> "You agree to the Terms and conditions",
-        '_showConstraints -> false
-      )
       </fieldset>
 
       <div class="actions">
