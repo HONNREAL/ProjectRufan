@@ -65,9 +65,9 @@
             <select name="cardMonth">
             @for(i <- 1 to 12) {
               @if(i < 10) {
-                options += "<option value="month"> 0@i</option>";
+                options += "<option value="@i"> 0@i</option>";
               } else {
-                options += "<option value="month">@i</option>";
+                options += "<option value="@i">@i</option>";
               }
             }
             </select>
@@ -76,7 +76,7 @@
             <label >Year</label>
             <select name="cardYear">
             @for(i <- 15 to 20) {
-              options += "<option value="year">@i</option>";
+              options += "<option value="@i">@i</option>";
             }
             </select>
           </dd>
