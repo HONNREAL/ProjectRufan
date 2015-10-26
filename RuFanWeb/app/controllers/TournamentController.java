@@ -22,4 +22,8 @@ public class TournamentController extends Controller {
         List<Tournament> tournamentList = tournamentService.getTournaments();
         return ok(tournaments.render(tournamentList));
     }
+
+    public Result tournament(int id){
+        return ok(tournaments.render(null));
+    }
 }
