@@ -39,4 +39,9 @@ public class Application extends Controller {
         return ok(index.render(activeTournaments));
     }
 
+    public Result PageNotFound()
+    {
+        return ok(notfound.render());
+    }
+
 }

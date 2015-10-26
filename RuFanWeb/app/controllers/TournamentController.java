@@ -7,7 +7,9 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.tournaments;
+import views.html.tournament;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +26,13 @@ public class TournamentController extends Controller {
     }
 
     public Result tournament(int id){
-        return ok(tournaments.render(null));
+        TournamentService tournamentService = (TournamentService) tctx.getBean("tournamentService");
+        Tournament t = tournamentService.getTournamentById(id);
+        Date today = new Date();
+        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
+            return ok(tournament.render(t));
+        }else{
+            return redirect("/PageNotFound");
+        }
     }
 }

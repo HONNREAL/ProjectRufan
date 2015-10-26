@@ -10,11 +10,11 @@
         <div class="jumbotron">
             <h1>RuFan - Daily Fantasy Sport</h1>
             <p>Good to see you again @{session.get("displayName")}!</p>
-            <a href="#" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-search"></span> Tournaments</a>
+            <a href="/tournaments" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-search"></span> Tournaments</a>
         </div>
         <div class="table-responsive">
             <table class="table">
-                <tr><th>Active Tournaments</th><th></th></tr>
+                <tr><th>Active Tournaments</th><th></th><th></th><th></th><th></th></tr>
                 <tr><td>Name</td><td>Start Time</td><td>End Time</td><td>Entry Fee</td><td>League</td></League></tr>
             @for(tournament <- tournaments){
                 <tr>
