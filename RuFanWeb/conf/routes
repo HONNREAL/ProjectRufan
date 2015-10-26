@@ -3,17 +3,19 @@
 # ~~~~
 
 # Home page
-GET         /                    controllers.Application.index()
-GET         /signup              controllers.SignupController.blank()
-POST        /signup              controllers.SignupController.signup()
-GET         /login               controllers.LoginController.blank()
-POST        /login               controllers.LoginController.login()
-GET         /logout              controllers.LoginController.logout()
-GET         /profile             controllers.ProfileController.index()
-POST        /profile             controllers.ProfileController.update()
-GET         /tournaments         controllers.TournamentController.index()
+GET         /                       controllers.Application.index()
+GET         /signup                 controllers.SignupController.blank()
+POST        /signup                 controllers.SignupController.signup()
+GET         /login                  controllers.LoginController.blank()
+POST        /login                  controllers.LoginController.login()
+GET         /logout                 controllers.LoginController.logout()
+GET         /profile                controllers.ProfileController.index()
+POST        /profile                controllers.ProfileController.update()
+GET         /tournaments            controllers.TournamentController.index()
+GET         /tournaments/:id        controllers.TournamentController.tournament(id: Integer)
+GET         /PageNotFound              controllers.Application.PageNotFound()
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
 

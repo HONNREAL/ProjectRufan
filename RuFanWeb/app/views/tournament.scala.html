@@ -1,0 +1,16 @@
+@(tournament: is.rufan.tournament.domain.Tournament)
+
+@import play.api.Play.current
+
+@main("Rufan - Tournaments") {
+
+  <h2>Tournament</h2>
+
+  @if(session.get("username")) {
+    <h2>@tournament.getName</h2>
+
+
+  } else {
+    Not Logged In.
+  }
+}

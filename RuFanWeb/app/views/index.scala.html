@@ -1,8 +1,8 @@
-@(title: String = "Welcome!")
+@(tournaments: List[is.rufan.tournament.domain.Tournament])
 
 @import play.api.Play.current
 
-@main(title) {
+@main() {
 
     <h2>Welcome to RuFan</h2>
     @if(session.get("username")) {
@@ -10,10 +10,25 @@
         <div class="jumbotron">
             <h1>RuFan - Daily Fantasy Sport</h1>
             <p>Good to see you again @{session.get("displayName")}!</p>
-            <a href="#" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-search"></span> Tournaments</a>
+            <a href="/tournaments" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-search"></span> Tournaments</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <tr><th>Active Tournaments</th><th></th><th></th><th></th><th></th></tr>
+                <tr><td>Name</td><td>Start Time</td><td>End Time</td><td>Entry Fee</td><td>League</td></League></tr>
+            @for(tournament <- tournaments){
+                <tr>
+                    <td><a href="tournaments/@tournament.getId">@tournament.getName</a></td>
+                    <td>@tournament.getStartDate</td>
+                    <td>@tournament.getEndDate</td>
+                    <td>@tournament.getEntryFee</td>
+                    <td>EPL</td>
+                </tr>
+            }
+            </table>
         </div>
 
     } else {
-        <image src="@routes.Assets.versioned("/images/RuFan-FrontPageLogo.png")"/>
+        <image id="FrontPageImage" src="@routes.Assets.versioned("/images/RuFan-FrontPageLogo.png")"/>
     }
 }
