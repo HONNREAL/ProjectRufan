@@ -50,9 +50,9 @@ public class ProfileController extends UserController {
 
         TeamService teamService = (TeamService) tctx.getBean("teamService");
         List<Team> teams = teamService.getTeams();
-
         String lastcardnum = "                ";
         if (!filledForm.field("cardNumber").value().isEmpty()
+                || filledForm.field("creditCardType").value() != null
                 || !filledForm.field("securityCode").value().isEmpty()
                 || !filledForm.field("cardMonth").value().toString().equals("-")
                 || !filledForm.field("cardYear").value().toString().equals("-")) {
@@ -77,12 +77,17 @@ public class ProfileController extends UserController {
                 filledForm.reject("cardNumber", "No year selected.");
             }
 
+            if (filledForm.field("creditCardType").value() == null) {
+                filledForm.reject("creditCardType", "No Credit card type selected.");
+            }
+
             if (!filledForm.hasErrors())
             {
                 user.setCardNumber(filledForm.get().getCardNumber());
                 user.setCardMonth(filledForm.field("cardMonth").value().toString());
                 user.setCardYear(filledForm.field("cardYear").value().toString());
                 user.setSecurityCode(filledForm.field("securityCode").value().toString());
+                user.setCardType(filledForm.field("creditCardType").value());
             }
          }
 

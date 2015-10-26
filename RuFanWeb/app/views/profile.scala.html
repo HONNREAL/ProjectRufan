@@ -45,9 +45,18 @@
           }
         </td>
         </tr>
+          <tr>
+              <td>Credit Card Type</td><td>
+              @if(user.getCardType != null){
+                  @user.getCardType
+              }
+          </td>
+          </tr>
         <tr>
           <td>Expiration Date</td><td>
-          @user.getCardMonth / @user.getCardYear
+            @if(user.getCardMonth != null & user.getCardYear != null) {
+                @user.getCardMonth / @user.getCardYear
+            }
         </td>
         </tr>
       </table>
