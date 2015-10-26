@@ -13,6 +13,7 @@ GET         /profile                controllers.ProfileController.index()
 POST        /profile                controllers.ProfileController.update()
 GET         /tournaments            controllers.TournamentController.index()
 GET         /tournaments/:id        controllers.FantasyTeamController.tournament(id: Integer)
+POST         /tournaments/:id        controllers.FantasyTeamController.buildFantasyTeam(id: Integer)
 GET         /PageNotFound           controllers.Application.PageNotFound()
 
 
