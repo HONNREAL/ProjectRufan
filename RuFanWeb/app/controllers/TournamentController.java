@@ -1,5 +1,7 @@
 package controllers;
 
+import is.rufan.player.domain.Player;
+import is.rufan.player.service.PlayerService;
 import is.rufan.tournament.domain.Tournament;
 import is.rufan.tournament.service.TournamentService;
 import org.springframework.context.ApplicationContext;
@@ -18,6 +20,7 @@ import java.util.List;
 public class TournamentController extends Controller {
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
 
+
     public Result index()
     {
         TournamentService tournamentService = (TournamentService) tctx.getBean("tournamentService");
@@ -25,14 +28,4 @@ public class TournamentController extends Controller {
         return ok(tournaments.render(tournamentList));
     }
 
-    public Result tournament(int id){
-        TournamentService tournamentService = (TournamentService) tctx.getBean("tournamentService");
-        Tournament t = tournamentService.getTournamentById(id);
-        Date today = new Date();
-        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
-            return ok(tournament.render(t));
-        }else{
-            return redirect("/PageNotFound");
-        }
-    }
 }
