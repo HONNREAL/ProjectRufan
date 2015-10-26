@@ -8,11 +8,16 @@
 
   @if(session.get("username")) {
     <h2>@tournament.getName</h2>
-    <select name="players" multiple>
+    <select name="players">
     @for(player <- players){
-      <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+        @if(!player.getPositions.isEmpty) {
+          @if(player.getPositions.get(0).getPositionId.equals(1)) {
+            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+          }
+        }
     }
     </select>
+
   } else {
     Not Logged In.
   }
