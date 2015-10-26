@@ -98,7 +98,9 @@ public class ProfileController extends UserController {
             }catch(Exception e){
                 //return badRequest(profile.render(teams, filledForm, user));
             }
-            user.setFavTeamId(favTeamId);
+            if(!filledForm.hasErrors()) {
+                user.setFavTeamId(favTeamId);
+            }
 
         }
 

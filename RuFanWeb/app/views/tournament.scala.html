@@ -1,4 +1,4 @@
-@(tournament: is.rufan.tournament.domain.Tournament)
+@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player])
 
 @import play.api.Play.current
 
@@ -8,8 +8,11 @@
 
   @if(session.get("username")) {
     <h2>@tournament.getName</h2>
-
-
+    <select name="players" multiple>
+    @for(player <- players){
+      <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+    }
+    </select>
   } else {
     Not Logged In.
   }

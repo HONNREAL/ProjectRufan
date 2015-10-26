@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <beans>
+        <bean id="processContext" class="is.ruframework.process.RuProcessContext">
+            <property name="processName">
+                <value>PlayerImportProcess</value>
+            </property>
+            <property name="importURL">
+                <value>http://olafurandri.com/honn/players.json</value>
+            </property>
+            <property name="processClass">
+                <value>is.rufan.player.process.PlayerImportProcess</value>
+            </property>
+        </bean>
+
+        <bean id="playerReader" class="is.rufan.player.process.PlayerReader">
+            <property name="URI">
+                <value>http://olafurandri.com/honn/players.json</value></property>
+        </bean>
+
+    </beans>
+
+</beans>
+
