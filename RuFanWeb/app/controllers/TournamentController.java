@@ -1,11 +1,11 @@
 package controllers;
 
-import is.rufan.team.service.TournamentService;
+import is.rufan.tournament.domain.Tournament;
+import is.rufan.tournament.service.TournamentService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.profile;
 import views.html.tournaments;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class TournamentController extends Controller {
     public Result index()
     {
         TournamentService tournamentService = (TournamentService) tctx.getBean("tournamentService");
-
-        return ok(tournaments.render(tournamentService.getTournaments()));
+        List<Tournament> tournamentList = tournamentService.getTournaments();
+        return ok(tournaments.render(tournamentList));
     }
 }
