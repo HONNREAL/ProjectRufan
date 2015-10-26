@@ -23,7 +23,7 @@ import static play.data.Form.form;
 public class FantasyTeamController extends Controller {
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
     protected ApplicationContext pctx = new FileSystemXmlApplicationContext("/conf/playerapp.xml");
-    protected ApplicationContext fctx = new FileSystemXmlApplicationContext("/conf/fantasyplayerapp.xml");
+    //protected ApplicationContext fctx = new FileSystemXmlApplicationContext("/conf/fantasyplayerapp.xml");
 
     final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
 
@@ -60,6 +60,37 @@ public class FantasyTeamController extends Controller {
             System.out.println(filledForm.field("Defender2").value());
         }
 
+        if(filledForm.field("Defender3").value() != null) {
+            System.out.println(filledForm.field("Defender3").value());
+        }
+
+        if(filledForm.field("Defender4").value() != null) {
+            System.out.println(filledForm.field("Defender3").value());
+        }
+
+        if(filledForm.field("Midfielder1").value() != null) {
+            System.out.println(filledForm.field("Midfielder1").value());
+        }
+
+        if(filledForm.field("Midfielder2").value() != null) {
+            System.out.println(filledForm.field("Midfielder2").value());
+        }
+
+        if(filledForm.field("Midfielder3").value() != null) {
+            System.out.println(filledForm.field("Midfielder3").value());
+        }
+
+        if(filledForm.field("Midfielder4").value() != null) {
+            System.out.println(filledForm.field("Midfielder4").value());
+        }
+
+        if(filledForm.field("Forward1").value() != null) {
+            System.out.println(filledForm.field("Forward1").value());
+        }
+
+        if(filledForm.field("Forward2").value() != null) {
+            System.out.println(filledForm.field("Forward2").value());
+        }
 
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players));
