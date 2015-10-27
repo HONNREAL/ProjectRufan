@@ -2,6 +2,7 @@ package controllers;
 
 import is.rufan.fantasyplayer.domain.FantasyPlayer;
 import is.rufan.fantasyplayer.service.FantasyPlayerService;
+import is.rufan.fantasypoints.service.FantasyPointService;
 import is.rufan.fantasyteam.domain.FantasyTeam;
 import is.rufan.fantasyteam.service.FantasyTeamService;
 import is.rufan.player.domain.Player;
@@ -43,6 +44,7 @@ public class FantasyTeamController extends Controller {
     protected ApplicationContext gctx = new FileSystemXmlApplicationContext("/conf/gameapp.xml");
     protected ApplicationContext teamctx = new FileSystemXmlApplicationContext("/conf/teamapp.xml");
     protected ApplicationContext ftctx = new FileSystemXmlApplicationContext("/conf/fantasyteamapp.xml");
+    protected ApplicationContext fpctx = new FileSystemXmlApplicationContext("/conf/fantasypointapp.xml");
 
 
     private PlayerService playerService;
@@ -53,6 +55,7 @@ public class FantasyTeamController extends Controller {
     private GameService gameService;
     private TeamService teamService;
     private FantasyTeamService fantasyTeamService;
+    private FantasyPointService fantasyPointService;
     private List<Player> players;
 
     final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
@@ -66,6 +69,7 @@ public class FantasyTeamController extends Controller {
         gameService = (GameService) gctx.getBean("gameService");
         teamService = (TeamService) teamctx.getBean("teamService");
         fantasyTeamService = (FantasyTeamService) ftctx.getBean("fantasyTeamService");
+        fantasyPointService = (FantasyPointService) fpctx.getBean("fantasypointService");
         /* Get Playerlist in the constructor for FantasyTeamController
          * so that we only need to fetch the list once, since it takes
          * long to fetch.
@@ -312,5 +316,28 @@ public class FantasyTeamController extends Controller {
         }
 
         return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, activeTournaments, teams, userId));
+    }
+
+    public Result winnerSelection(){
+        Date today = new Date();
+        for(Tournament tournament : tournamentService.getTournaments()){
+            if(tournament.getStatus() && tournament.getEndDate() != null && tournament.getEndDate().before(today)){
+                List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByTournamentId(tournament.getId());
+                for(FantasyTeam fantasyTeam : fantasyTeams){
+                    List<FantasyPlayer> fantasyPlayers = fantasyPlayerService.getFantasyPlayersWithUserId(fantasyTeam.getUserid());
+                    for(FantasyPlayer fantasyPlayer : fantasyPlayers){
+                        if(fantasyPlayer.getTournamentId() == tournament.getId()) {
+                            fantasyTeam.addPoints(fantasyPointService.getPoints(fantasyPlayer.getPlayerId()));
+                        }
+                    }
+                    fantasyTeam.setStatus("WINNER_SELECTED");
+                    fantasyTeamService.updateFantasyTeam(fantasyTeam);
+                }
+                tournament.setStatus(false);
+                tournamentService.updateTournament(tournament.getId(), tournament);
+            }
+        }
+
+        return redirect("/");
     }
 }

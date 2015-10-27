@@ -9,7 +9,7 @@
                             <value>WinnerSelectionProcess</value>
                      </property>
                      <property name="processClass">
-                            <value>winnerselection.process.WinnerSelectionProcess</value>
+                            <value>is.rufan.winnerselection.process.WinnerSelectionProcess</value>
                      </property>
               </bean>
        </beans>
