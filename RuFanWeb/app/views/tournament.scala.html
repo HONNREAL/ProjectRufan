@@ -1,6 +1,7 @@
-@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player], usersPlayers: List[is.rufan.player.domain.Player])
+@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player], usersPlayers: List[is.rufan.player.domain.Player], teams: List[is.rufan.team.domain.Team])
 
 @import play.api.Play.current
+@import scala.util.control.Breaks._
 
 @main("Rufan - Tournament") {
   @if(session.get("username")) {
@@ -18,7 +19,13 @@
                       @if(!player.getPositions.isEmpty) {
                         @for(j <- 0 to player.getPositions.size-1) {
                           @if(player.getPositions.get(j).getPositionId.equals(1)){
-                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                            @for(team <- teams){
+                              @if(team.getTeamId.equals(player.getTeamId)){
+                                @team.getDisplayName
+                              }
+                            }
+                            </option>
                           }
                         }
                       }
@@ -32,8 +39,16 @@
                     <option value="-">-</option>
                     @for(player <- players){
                       @if(!player.getPositions.isEmpty) {
-                        @if(player.getPositions.get(0).getPositionId.equals(4)) {
-                          <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+                        @for(j <- 0 to player.getPositions.size-1) {
+                          @if(player.getPositions.get(j).getPositionId.equals(4)){
+                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                              @for(team <- teams){
+                                @if(team.getTeamId.equals(player.getTeamId)){
+                                  @team.getDisplayName
+                                }
+                              }
+                            </option>
+                          }
                         }
                       }
                     }
@@ -47,8 +62,16 @@
                     <option value="-">-</option>
                     @for(player <- players){
                       @if(!player.getPositions.isEmpty) {
-                        @if(player.getPositions.get(0).getPositionId.equals(3)) {
-                          <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+                        @for(j <- 0 to player.getPositions.size-1) {
+                          @if(player.getPositions.get(j).getPositionId.equals(3)){
+                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                              @for(team <- teams){
+                                @if(team.getTeamId.equals(player.getTeamId)){
+                                  @team.getDisplayName
+                                }
+                              }
+                            </option>
+                          }
                         }
                       }
                     }
@@ -62,8 +85,17 @@
                     <option value="-">-</option>
                     @for(player <- players){
                       @if(!player.getPositions.isEmpty) {
-                        @if(player.getPositions.get(0).getPositionId.equals(2)) {
-                          <option value="@player.getPlayerId">@player.getFirstName @player.getLastName</option>
+                        @for(j <- 0 to player.getPositions.size-1) {
+                          @if(player.getPositions.get(j).getPositionId.equals(2)){
+                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                              @for(team <- teams){
+                                @if(team.getTeamId.equals(player.getTeamId)){
+                                  @team.getDisplayName
+                                }
+                              }
+                            </option>
+
+                          }
                         }
                       }
                     }
@@ -78,21 +110,19 @@
       </div>
       </fieldset>
     }
-<<<<<<< HEAD
-    </div>
 
 
       @if(usersPlayers != null){
-        <li>
-        @for(player <- usersPlayers){
-          <ul>@player.getFirstName @player.getLastName</ul>
-        }
-        </li>
+        <div class="table-responsive">
+          <table class="table">
+            <tr><th>Your FantasyTeam</th></tr>
+            @for(player <- usersPlayers){
+              <tr><td>@player.getFirstName @player.getLastName</td></tr>
+            }
+          </table>
+        </div>
       }
 
-
-=======
->>>>>>> origin/master
   } else {
     Not Logged In.
   }
