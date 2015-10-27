@@ -5,12 +5,8 @@
 
        <beans>
               <bean id="processContext" class="is.ruframework.process.RuProcessContext">
-                     <property name="processName">
-                            <value>WinnerSelectionProcess</value>
-                     </property>
-                     <property name="processClass">
-                            <value>winnerselection.process.WinnerSelectionProcess</value>
-                     </property>
+                     <property name="processName" value="WinnerSelectionProcess"/>
+                     <property name="processClass" value="winnerselection.process.WinnerSelectionProcess"/>
               </bean>
        </beans>
 

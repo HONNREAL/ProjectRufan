@@ -57,6 +57,9 @@ public class FantasyTeamController extends Controller {
 
     final static Form<FantasyPlayer> fantasyTeamForm = form(FantasyPlayer.class);
 
+    /**
+     * Constructor, get all the services.
+     */
     public FantasyTeamController(){
         playerService = (PlayerService) pctx.getBean("playerService");
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
@@ -73,6 +76,12 @@ public class FantasyTeamController extends Controller {
         players = playerService.getPlayers();
     }
 
+    /**
+     * 
+     * @param id Tournament ID
+     * @return provide view tournament.scala.html with data for rendering, status 200 OK
+     * or page not found
+     */
     public Result tournament(int id){
         Tournament t = tournamentService.getTournamentById(id);
         if(t == null){
