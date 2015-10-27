@@ -55,7 +55,7 @@ public class FantasyTeamController extends Controller {
     private FantasyTeamService fantasyTeamService;
     private List<Player> players;
 
-    final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
+    final static Form<FantasyPlayer> fantasyTeamForm = form(FantasyPlayer.class);
 
     public FantasyTeamController(){
         playerService = (PlayerService) pctx.getBean("playerService");
@@ -94,6 +94,7 @@ public class FantasyTeamController extends Controller {
         int userId = userService.getUserByUsername(session().get("username")).getId();
         List<FantasyPlayer> tournamentFantasyPlayers = null;
         List<Player> usersFantasyPlayers = new ArrayList<Player>();
+
         for(FantasyTeam ft : fantasyTeams){
             if(ft.getUserid() == userId){
                 tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(id);
@@ -110,7 +111,6 @@ public class FantasyTeamController extends Controller {
                 break;
             }
         }
-
 
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
@@ -140,7 +140,7 @@ public class FantasyTeamController extends Controller {
         fantasyPlayer.setTournamentId(tournamentId);
         fantasyPlayer.setUserId(userId);
 
-        Form<FantasyPlayer> filledForm = signupForm.bindFromRequest();
+        Form<FantasyPlayer> filledForm = fantasyTeamForm.bindFromRequest();
 
         for(FantasyPlayer fp : tournamentFantasyPlayers){
             if(fp.getUserId() == userId ){
