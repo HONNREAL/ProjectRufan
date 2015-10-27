@@ -4,150 +4,148 @@
 @import helper._
 
 @main("Rufan - Tournament") {
-  @if(session.get("username")) {
-    <h2>Tournament name: @tournament.getName</h2>
-    <h3>English Premier League</h3>
-    <h4>Starts at @tournament.getStartDate</h4>
-    <h4>Ends at @tournament.getEndDate</h4>
-    <h5>Entry fee: @tournament.getEntryFee</h5>
-    <p>@message</p>
-    @if((usersPlayers == null || usersPlayers.isEmpty) && !isFull){
+    @if(session.get("username")) {
+        <h2>Tournament name: @tournament.getName</h2>
+        <h3>English Premier League</h3>
+        <h4>Starts at @tournament.getStartDate</h4>
+        <h4>Ends at @tournament.getEndDate</h4>
+        <h5>Entry fee: @tournament.getEntryFee</h5>
+        <p>@message</p>
+        @if((usersPlayers == null || usersPlayers.isEmpty) && !isFull){
 
-    @helper.form(action = routes.FantasyTeamController.buildFantasyTeam(tournament.getId)) {
-      <fieldset>
-          <dl class="fantasyTeamBuild">
-            <dt><label for="buildFantasyTeam">Build Fantasy Team</label></dt>
-              <label>Goalkeeper</label>
-              <dd>
-                  <select class="playerDrop" name="GoalKeeper">
-                    <option value="-">-</option>
-                    @for(player <- players){
-                      @if(!player.getPositions.isEmpty) {
-                        @for(j <- 0 to player.getPositions.size-1) {
-                          @if(player.getPositions.get(j).getPositionId.equals(1)){
-                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
-                            @for(team <- teams){
-                              @if(team.getTeamId.equals(player.getTeamId)){
-                                @team.getDisplayName
-                              }
-                            }
-                            </option>
-                          }
-                        }
-                      }
-                    }
-                  </select>
-              </dd>
-              <label>Defenders</label>
-              <dd>
-                @for(i <- 1 to 4){
-                  <select class="playerDrop" name="Defender@i">
-                    <option value="-">-</option>
-                    @for(player <- players){
-                      @if(!player.getPositions.isEmpty) {
-                        @for(j <- 0 to player.getPositions.size-1) {
-                          @if(player.getPositions.get(j).getPositionId.equals(4)){
-                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
-                              @for(team <- teams){
-                                @if(team.getTeamId.equals(player.getTeamId)){
-                                  @team.getDisplayName
+            @helper.form(action = routes.FantasyTeamController.buildFantasyTeam(tournament.getId)) {
+                <fieldset>
+                    <dl class="fantasyTeamBuild">
+                        <dt><label for="buildFantasyTeam">Build Fantasy Team</label></dt>
+                        <label>Goalkeeper</label>
+                        <dd>
+                            <select class="playerDrop" name="GoalKeeper">
+                                <option value="-">-</option>
+                                @for(player <- players){
+                                    @if(!player.getPositions.isEmpty) {
+                                        @for(j <- 0 to player.getPositions.size-1) {
+                                            @if(player.getPositions.get(j).getPositionId.equals(1)){
+                                                <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                                                    @for(team <- teams){
+                                                        @if(team.getTeamId.equals(player.getTeamId)){
+                                                            @team.getDisplayName
+                                                        }
+                                                    }
+                                                </option>
+                                            }
+                                        }
+                                    }
                                 }
-                              }
-                            </option>
-                          }
-                        }
-                      }
-                    }
-                  </select>
-                }
-              </dd>
-              <label>Midfields</label>
-              <dd>
-                @for(i <- 1 to 4){
-                  <select class="playerDrop" name="Midfielder@i">
-                    <option value="-">-</option>
-                    @for(player <- players){
-                      @if(!player.getPositions.isEmpty) {
-                        @for(j <- 0 to player.getPositions.size-1) {
-                          @if(player.getPositions.get(j).getPositionId.equals(3)){
-                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
-                              @for(team <- teams){
-                                @if(team.getTeamId.equals(player.getTeamId)){
-                                  @team.getDisplayName
+                            </select>
+                        </dd>
+                        <label>Defenders</label>
+                        <dd>
+                        @for(i <- 1 to 4){
+                            <select class="playerDrop" name="Defender@i">
+                                <option value="-">-</option>
+                                @for(player <- players){
+                                    @if(!player.getPositions.isEmpty) {
+                                        @for(j <- 0 to player.getPositions.size-1) {
+                                            @if(player.getPositions.get(j).getPositionId.equals(4)){
+                                                <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                                                    @for(team <- teams){
+                                                        @if(team.getTeamId.equals(player.getTeamId)){
+                                                            @team.getDisplayName
+                                                        }
+                                                    }
+                                                </option>
+                                            }
+                                        }
+                                    }
                                 }
-                              }
-                            </option>
-                          }
+                            </select>
                         }
-                      }
-                    }
-                  </select>
-                }
-              </dd>
-              <label>Forwards</label>
-              <dd>
-                @for(i <- 1 to 2){
-                  <select class="playerDrop" name="Forward@i">
-                    <option value="-">-</option>
-                    @for(player <- players){
-                      @if(!player.getPositions.isEmpty) {
-                        @for(j <- 0 to player.getPositions.size-1) {
-                          @if(player.getPositions.get(j).getPositionId.equals(2)){
-                            <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
-                              @for(team <- teams){
-                                @if(team.getTeamId.equals(player.getTeamId)){
-                                  @team.getDisplayName
+                        </dd>
+                        <label>Midfields</label>
+                        <dd>
+                        @for(i <- 1 to 4){
+                            <select class="playerDrop" name="Midfielder@i">
+                                <option value="-">-</option>
+                                @for(player <- players){
+                                    @if(!player.getPositions.isEmpty) {
+                                        @for(j <- 0 to player.getPositions.size-1) {
+                                            @if(player.getPositions.get(j).getPositionId.equals(3)){
+                                                <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                                                    @for(team <- teams){
+                                                        @if(team.getTeamId.equals(player.getTeamId)){
+                                                            @team.getDisplayName
+                                                        }
+                                                    }
+                                                </option>
+                                            }
+                                        }
+                                    }
                                 }
-                              }
-                            </option>
-
-                          }
+                            </select>
                         }
-                      }
-                    }
-                  </select>
-                }
-              </dd>
-          </dl>
+                        </dd>
+                        <label>Forwards</label>
+                        <dd>
+                        @for(i <- 1 to 2){
+                            <select class="playerDrop" name="Forward@i">
+                                <option value="-">-</option>
+                                @for(player <- players){
+                                    @if(!player.getPositions.isEmpty) {
+                                        @for(j <- 0 to player.getPositions.size-1) {
+                                            @if(player.getPositions.get(j).getPositionId.equals(2)){
+                                                <option value="@player.getPlayerId">@player.getFirstName @player.getLastName -
+                                                    @for(team <- teams){
+                                                        @if(team.getTeamId.equals(player.getTeamId)){
+                                                            @team.getDisplayName
+                                                        }
+                                                    }
+                                                </option>
 
-      <div class="actions">
-        <input type="submit" class="btn btn-primary" value="Build Team">
-        <a href="@routes.Application.index" class="btn">Cancel</a>
-      </div>
-      </fieldset>
-      <h5>All positions must be manned, otherwise a team cannot be built.</h5>
-    }
-    }
-
-      @if(usersPlayers != null && !usersPlayers.isEmpty){
-        <div class="table-responsive jumbotron">
-          <table class="table table-striped">
-            <tr><th>Your FantasyTeam</th><th>Plays For</th><th>Position</th></tr>
-            @for(player <- usersPlayers){
-              <tr>
-                <td>@player.getFirstName @player.getLastName</td>
-                <td>
-                @for(team <- teams){
-                  @if(team.getTeamId.equals(player.getTeamId)){
-                    @team.getDisplayName
-                  }
-                }
-                </td>
-                <td>
-                @if(!player.getPositions.isEmpty) {
-                  @for(j <- 0 to player.getPositions.size-1) {
-                    <span>@player.getPositions.get(j).getAbbreviation </span>
-                  }
-                }
-                </td>
-
-              </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </select>
+                        }
+                        </dd>
+                    </dl>
+                    <h5>All positions must be manned, otherwise a team cannot be built.</h5>
+                    <div class="actions">
+                        <input type="submit" class="btn btn-primary" value="Build Team">
+                        <a href="@routes.Application.index" class="btn">Cancel</a>
+                    </div>
+                </fieldset>
             }
-          </table>
-        </div>
-      }
+        }
 
-  } else {
-    Not Logged In.
-  }
+        @if(usersPlayers != null && !usersPlayers.isEmpty){
+            <div class="table-responsive">
+                <table class="table">
+                    <tr><th>Your FantasyTeam</th><th>Plays For</th><th>Position</th></tr>
+                    @for(player <- usersPlayers){
+                        <tr>
+                            <td>@player.getFirstName @player.getLastName</td>
+                            <td>
+                            @for(team <- teams){
+                                @if(team.getTeamId.equals(player.getTeamId)){
+                                    @team.getDisplayName
+                                }
+                            }
+                            </td>
+                            <td>
+                            @if(!player.getPositions.isEmpty) {
+                                @for(j <- 0 to player.getPositions.size-1) {
+                                    <span>@player.getPositions.get(j).getAbbreviation </span>
+                                }
+                            }
+                            </td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    } else {
+        Not Logged In.
+    }
 }

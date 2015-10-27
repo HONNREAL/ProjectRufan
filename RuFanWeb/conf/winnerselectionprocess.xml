@@ -11,6 +11,7 @@
                      <property name="processClass">
                             <value>is.rufan.winnerselection.process.WinnerSelectionProcess</value>
                      </property>
+
               </bean>
        </beans>
 

@@ -58,8 +58,11 @@ public class FantasyTeamController extends Controller {
     private FantasyPointService fantasyPointService;
     private List<Player> players;
 
-    final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
+    final static Form<FantasyPlayer> fantasyTeamForm = form(FantasyPlayer.class);
 
+    /**
+     * Constructor, get all the services.
+     */
     public FantasyTeamController(){
         playerService = (PlayerService) pctx.getBean("playerService");
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
@@ -77,6 +80,12 @@ public class FantasyTeamController extends Controller {
         players = playerService.getPlayers();
     }
 
+    /**
+     *
+     * @param id Tournament ID
+     * @return provide view tournament.scala.html with data for rendering, status 200 OK
+     * or page not found
+     */
     public Result tournament(int id){
         Tournament t = tournamentService.getTournamentById(id);
         if(t == null){
@@ -98,6 +107,7 @@ public class FantasyTeamController extends Controller {
         int userId = userService.getUserByUsername(session().get("username")).getId();
         List<FantasyPlayer> tournamentFantasyPlayers = null;
         List<Player> usersFantasyPlayers = new ArrayList<Player>();
+
         for(FantasyTeam ft : fantasyTeams){
             if(ft.getUserid() == userId){
                 tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(id);
@@ -115,7 +125,6 @@ public class FantasyTeamController extends Controller {
             }
         }
 
-
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
         }else{
@@ -123,6 +132,12 @@ public class FantasyTeamController extends Controller {
         }
     }
 
+    /**
+     * For building a fantasy team.
+     * @param tournamentId Tournament ID
+     * @return Provide tournament view with data for rendering, status 200 OK
+     * or redirect.
+     */
     public Result buildFantasyTeam(int tournamentId){
 
         Tournament t = tournamentService.getTournamentById(tournamentId);
@@ -144,8 +159,8 @@ public class FantasyTeamController extends Controller {
         fantasyPlayer.setTournamentId(tournamentId);
         fantasyPlayer.setUserId(userId);
 
-        Form<FantasyPlayer> filledForm = signupForm.bindFromRequest();
-
+        Form<FantasyPlayer> filledForm = fantasyTeamForm.bindFromRequest();
+        // Add all players to fantasy team.
         for(FantasyPlayer fp : tournamentFantasyPlayers){
             if(fp.getUserId() == userId ){
                 for(Player p : players){
@@ -153,19 +168,19 @@ public class FantasyTeamController extends Controller {
                         usersFantasyPlayers.add(p);
                     }
                 }
-                filledForm.reject("GoalKeeper", "Team Already Built");
+                filledForm.reject("Enroll", "Team Already Built");
             }
         }
         List<Integer> playerIds = new ArrayList<Integer>();
         if(filledForm.field("GoalKeeper").value().equals("-")) {
-            filledForm.reject("Enroll", "Team Already Built");
+            filledForm.reject("Goalkeeper", "Team Already Built");
         }
         else{
             playerIds.add(Integer.parseInt(filledForm.field("GoalKeeper").value()));
         }
 
         if(filledForm.field("Defender1").value().equals("-")) {
-            filledForm.reject("GoalKeeper", "Team Already Built");
+            filledForm.reject("Defender1", "Team Already Built");
         }
         else{
             playerIds.add(Integer.parseInt(filledForm.field("Defender1").value()));
@@ -299,6 +314,11 @@ public class FantasyTeamController extends Controller {
         }
     }
 
+    /**
+     * Find active teams that are linked to an active tournament to send to
+     * myFantasyTeams for rendering.
+     * @return Provide myFantasyTeams view with data for rendering, status 200 OK.
+     */
     public Result myFantasyTeams(){
         int userId = userService.getUserByUsername(session().get("username")).getId();
 
