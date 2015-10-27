@@ -1,4 +1,4 @@
-@(tournaments: List[is.rufan.tournament.domain.Tournament])
+@(inactiveTournaments: List[is.rufan.tournament.domain.Tournament], activeTournaments: List[is.rufan.tournament.domain.Tournament])
 
 @import play.api.Play.current
 
@@ -9,12 +9,33 @@
   @if(session.get("username")) {
     <div class="table-responsive">
       <table class="table">
-      @for(tournament <- tournaments){
-        <tr><td>Name: @tournament.getName</td><td>Fee: @tournament.getEntryFee</td></tr>
+        <tr>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Entry fee</th>
+          <th>League</th>
+        </tr>
+        @for(tournament <- activeTournaments){
+          <tr>
+            <td><a href="tournaments/@tournament.getId">@tournament.getName</a></td>
+            <td>@tournament.getStartDate</td>
+            <td>@tournament.getEndDate</td>
+            <td>@tournament.getEntryFee</td>
+            <td>EPL</td>
+          </tr>
+        }
+
+      @for(tournament <- inactiveTournaments){
+        <tr><td>@tournament.getName</td>
+          <td>@tournament.getStartDate</td>
+          <td>@tournament.getEndDate</td>
+          <td>@tournament.getEntryFee</td>
+          <td>EPL</td>
+        </tr>
       }
       </table>
     </div>
-
 
   } else {
     Not Logged In.
