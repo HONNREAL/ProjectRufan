@@ -307,7 +307,15 @@ public class FantasyTeamController extends Controller {
         List<FantasyPlayer> fantasyPlayers = fantasyPlayerService.getFantasyPlayersWithUserId(userId);
         List<Tournament> tournaments = tournamentService.getTournaments();
         List<Team> teams = teamService.getTeams();
+        Date today = new Date();
+        List<Tournament> activeTournaments = new ArrayList<Tournament>();
 
-        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, tournaments, teams, userId));
+        for(Tournament t : tournaments){
+            if(t.getEndDate() != null && t.getEndDate().after(today)){
+                activeTournaments.add(t);
+            }
+        }
+
+        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, activeTournaments, teams, userId));
     }
 }

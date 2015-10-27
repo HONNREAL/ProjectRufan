@@ -31,6 +31,9 @@ public class ProfileController extends UserController {
      */
     public Result index()
     {
+        if(session().get("username") == null){
+            return redirect("/");
+        }
         String lastcardnum = "                ";
 
         TeamService teamService = (TeamService) tctx.getBean("teamService");
