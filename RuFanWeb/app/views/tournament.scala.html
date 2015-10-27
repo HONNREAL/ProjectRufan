@@ -1,4 +1,4 @@
-@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player])
+@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player], usersPlayers: List[is.rufan.player.domain.Player])
 
 @import play.api.Play.current
 
@@ -87,6 +87,16 @@
       </div>
     }
     </div>
+
+
+      @if(usersPlayers != null){
+        <li>
+        @for(player <- usersPlayers){
+          <ul>@player.getFirstName @player.getLastName</ul>
+        }
+        </li>
+      }
+
 
   } else {
     Not Logged In.
