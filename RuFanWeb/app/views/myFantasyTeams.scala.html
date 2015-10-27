@@ -7,9 +7,10 @@
     @for(fantasyTeam <- fantasyTeams){
       @for(tournament <- tournaments){
         @if(tournament.getId.equals(fantasyTeam.getTournamentId)){
-          <h3>Tournament Name: @tournament.getName</h3>
+          <div class="jumbotron">
+          <h4>My FantasyTeam for @tournament.getName</h4>
           <div class="table-responsive">
-            <table class="table">
+            <table class="table table-striped">
               <tr>
                 <th>Name</th>
                 <th>Plays For</th>
@@ -37,6 +38,7 @@
                 }
               }
             </table>
+          </div>
           </div>
         }
       }
