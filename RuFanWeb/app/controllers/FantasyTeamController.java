@@ -2,6 +2,8 @@ package controllers;
 
 import is.rufan.fantasyplayer.domain.FantasyPlayer;
 import is.rufan.fantasyplayer.service.FantasyPlayerService;
+import is.rufan.fantasyteam.domain.FantasyTeam;
+import is.rufan.fantasyteam.service.FantasyTeamService;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
@@ -38,6 +40,7 @@ public class FantasyTeamController extends Controller {
     protected ApplicationContext tgctx = new FileSystemXmlApplicationContext("/conf/tournamentgameapp.xml");
     protected ApplicationContext gctx = new FileSystemXmlApplicationContext("/conf/gameapp.xml");
     protected ApplicationContext teamctx = new FileSystemXmlApplicationContext("/conf/teamapp.xml");
+    protected ApplicationContext ftctx = new FileSystemXmlApplicationContext("/conf/fantasyteamapp.xml");
 
 
     private PlayerService playerService;
@@ -47,10 +50,13 @@ public class FantasyTeamController extends Controller {
     private TournamentGameService tournamentGameService;
     private GameService gameService;
     private TeamService teamService;
+    private FantasyTeamService fantasyTeamService;
+    private List<Player> players;
 
     final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
 
     public FantasyTeamController(){
+
         playerService = (PlayerService) pctx.getBean("playerService");
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
         fantasyPlayerService = (FantasyPlayerService) fctx.getBean("fantasyPlayerService");
@@ -58,29 +64,39 @@ public class FantasyTeamController extends Controller {
         tournamentGameService = (TournamentGameService) tgctx.getBean("tournamentGameService");
         gameService = (GameService) gctx.getBean("gameService");
         teamService = (TeamService) teamctx.getBean("teamService");
+        fantasyTeamService = (FantasyTeamService) ftctx.getBean("fantasyTeamService");
+        /* Get Playerlist in the constructor for FantasyTeamController
+         * so that we only need to fetch the list once, since it takes
+         * over 10 seconds to fetch.
+         */
+        players = playerService.getPlayers();
     }
 
     public Result tournament(int id){
-        List<Player> players = playerService.getPlayers();
         Tournament t = tournamentService.getTournamentById(id);
         Date today = new Date();
-
         int userId = userService.getUserByUsername(session().get("username")).getId();
-
-        List<FantasyPlayer> tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(id);
+        List<FantasyPlayer> tournamentFantasyPlayers = null;
         List<Player> usersFantasyPlayers = new ArrayList<Player>();
-        Player newPlayer;
-        for(FantasyPlayer fp : tournamentFantasyPlayers){
-            if(fp.getUserId() == userId ){
-                for(Player p : players){
-                    if(p.getPlayerId() == fp.getPlayerId()){
-                        usersFantasyPlayers.add(p);
+        for(FantasyTeam ft : fantasyTeamService.getFantasyTeamsByTournamentId(id)){
+            if(ft.getUserid() == userId){
+                tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(id);
+                Player newPlayer;
+                for(FantasyPlayer fp : tournamentFantasyPlayers){
+                    if(fp.getUserId() == userId ){
+                        for(Player p : players){
+                            if(p.getPlayerId() == fp.getPlayerId()){
+                                usersFantasyPlayers.add(p);
+                            }
+                        }
                     }
                 }
+                break;
             }
         }
 
-        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
+
+        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
         }else{
             return redirect("/PageNotFound");
@@ -88,9 +104,6 @@ public class FantasyTeamController extends Controller {
     }
 
     public Result buildFantasyTeam(int tournamentId){
-
-        List<Player> players = playerService.getPlayers();
-
 
         Tournament t = tournamentService.getTournamentById(tournamentId);
 
@@ -123,68 +136,108 @@ public class FantasyTeamController extends Controller {
                 filledForm.reject("GoalKeeper", "Team Already Built");
             }
         }
-
+        List<Integer> playerIds = new ArrayList<Integer>();
         if(filledForm.field("GoalKeeper").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("GoalKeeper").value()));
+        }
+
         if(filledForm.field("Defender1").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
-        if(filledForm.field("Defender2").value().equals("-")) {
-            filledForm.reject("GoalKeeper", "Team Already Built");
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Defender1").value()));
         }
+
+        if(filledForm.field("Defender2").value().equals("-")) {
+            filledForm.reject("Defender2", "Team Already Built");
+        }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Defender2").value()));
+        }
+
         if(filledForm.field("Defender3").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Defender3").value()));
+        }
+
         if(filledForm.field("Defender4").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Defender4").value()));
+        }
+
         if(filledForm.field("Midfielder1").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Midfielder1").value()));
+        }
+
         if(filledForm.field("Midfielder2").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Midfielder2").value()));
+        }
+
         if(filledForm.field("Midfielder3").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Midfielder3").value()));
+        }
+
         if(filledForm.field("Midfielder4").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
+        }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Midfielder4").value()));
         }
         if(filledForm.field("Forward1").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Forward1").value()));
+        }
         if(filledForm.field("Forward2").value().equals("-")) {
             filledForm.reject("GoalKeeper", "Team Already Built");
         }
+        else{
+            playerIds.add(Integer.parseInt(filledForm.field("Forward2").value()));
+        }
 
         if(!filledForm.hasErrors()){
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("GoalKeeper").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Defender1").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Defender2").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Defender3").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Defender4").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Midfielder1").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Midfielder2").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Midfielder3").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Midfielder4").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Forward1").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
-            fantasyPlayer.setPlayerId(Integer.parseInt(filledForm.field("Forward2").value()));
-            fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
+            for(int i = 0; i < playerIds.size(); i++){
+                for(int j = 0; j < playerIds.size(); j++){
+                    if(i != j){
+                        if(playerIds.get(i).equals(playerIds.get(j))){
+                            return badRequest(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
+                        }
+                    }
+                }
+            }
+
+            for(int PID : playerIds){
+                fantasyPlayer.setPlayerId(PID);
+                fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
+            }
+
 
             usersFantasyPlayers.clear();
             tournamentFantasyPlayers.clear();
             tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(tournamentId);
+            FantasyTeam fantasyTeam = new FantasyTeam();
+            fantasyTeam.setStatus("OPEN");
+            fantasyTeam.setTournamentId(tournamentId);
+            fantasyTeam.setUserid(userId);
+            fantasyTeamService.addFantasyTeam(fantasyTeam);
+
             for(FantasyPlayer fp : tournamentFantasyPlayers){
                 if(fp.getUserId() == userId ){
                     for(Player p : players){
@@ -201,7 +254,7 @@ public class FantasyTeamController extends Controller {
         }
 
 
-        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
+        if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
         }else{
             return redirect("/PageNotFound");

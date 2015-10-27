@@ -5,7 +5,12 @@
 
 @main("Rufan - Tournament") {
   @if(session.get("username")) {
-    <h2>@tournament.getName</h2>
+    <h2>Tournament name: @tournament.getName</h2>
+    <h3>English Premier League</h3>
+    <h4>Starts at @tournament.getStartDate</h4>
+    <h4>Ends at @tournament.getEndDate</h4>
+    <h5>Entry fee: @tournament.getEntryFee</h5>
+    @if(usersPlayers == null || usersPlayers.isEmpty){
 
     @helper.form(action = routes.FantasyTeamController.buildFantasyTeam(tournament.getId)) {
       <fieldset>
@@ -110,14 +115,31 @@
       </div>
       </fieldset>
     }
+    }
 
-
-      @if(usersPlayers != null){
+      @if(usersPlayers != null && !usersPlayers.isEmpty){
         <div class="table-responsive">
           <table class="table">
-            <tr><th>Your FantasyTeam</th></tr>
+            <tr><th>Your FantasyTeam</th><th>Plays For</th><th>Position</th></tr>
             @for(player <- usersPlayers){
-              <tr><td>@player.getFirstName @player.getLastName</td></tr>
+              <tr>
+                <td>@player.getFirstName @player.getLastName</td>
+                <td>
+                @for(team <- teams){
+                  @if(team.getTeamId.equals(player.getTeamId)){
+                    @team.getDisplayName
+                  }
+                }
+                </td>
+                <td>
+                @if(!player.getPositions.isEmpty) {
+                  @for(j <- 0 to player.getPositions.size-1) {
+                    <span>@player.getPositions.get(j).getAbbreviation </span>
+                  }
+                }
+                </td>
+
+              </tr>
             }
           </table>
         </div>
