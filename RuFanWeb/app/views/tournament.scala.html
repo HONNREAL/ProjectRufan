@@ -1,7 +1,7 @@
-@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player], usersPlayers: List[is.rufan.player.domain.Player], teams: List[is.rufan.team.domain.Team])
+@(tournament: is.rufan.tournament.domain.Tournament, players: List[is.rufan.player.domain.Player], usersPlayers: List[is.rufan.player.domain.Player], teams: List[is.rufan.team.domain.Team], message: String, isFull: Boolean)
 
 @import play.api.Play.current
-@import scala.util.control.Breaks._
+@import helper._
 
 @main("Rufan - Tournament") {
   @if(session.get("username")) {
@@ -10,7 +10,8 @@
     <h4>Starts at @tournament.getStartDate</h4>
     <h4>Ends at @tournament.getEndDate</h4>
     <h5>Entry fee: @tournament.getEntryFee</h5>
-    @if(usersPlayers == null || usersPlayers.isEmpty){
+    <p>@message</p>
+    @if((usersPlayers == null || usersPlayers.isEmpty) && !isFull){
 
     @helper.form(action = routes.FantasyTeamController.buildFantasyTeam(tournament.getId)) {
       <fieldset>
@@ -114,6 +115,7 @@
         <a href="@routes.Application.index" class="btn">Cancel</a>
       </div>
       </fieldset>
+      <h5>All positions must be manned, otherwise a team cannot be built.</h5>
     }
     }
 

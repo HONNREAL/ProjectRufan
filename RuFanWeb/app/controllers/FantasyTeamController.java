@@ -56,7 +56,6 @@ public class FantasyTeamController extends Controller {
     final static Form<FantasyPlayer> signupForm = form(FantasyPlayer.class);
 
     public FantasyTeamController(){
-
         playerService = (PlayerService) pctx.getBean("playerService");
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
         fantasyPlayerService = (FantasyPlayerService) fctx.getBean("fantasyPlayerService");
@@ -74,11 +73,26 @@ public class FantasyTeamController extends Controller {
 
     public Result tournament(int id){
         Tournament t = tournamentService.getTournamentById(id);
+        if(t == null){
+            return redirect("/PageNotFound");
+        }
+        String message = "";
+        boolean isFull = false;
+        List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByTournamentId(id);
+        if(fantasyTeams.size() >= t.getMaxEntries()){
+            message = "Tournament is full " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+            isFull = true;
+        }
+        else{
+            isFull = false;
+            message = "Tournament is open for enrollment " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+        }
+
         Date today = new Date();
         int userId = userService.getUserByUsername(session().get("username")).getId();
         List<FantasyPlayer> tournamentFantasyPlayers = null;
         List<Player> usersFantasyPlayers = new ArrayList<Player>();
-        for(FantasyTeam ft : fantasyTeamService.getFantasyTeamsByTournamentId(id)){
+        for(FantasyTeam ft : fantasyTeams){
             if(ft.getUserid() == userId){
                 tournamentFantasyPlayers = fantasyPlayerService.getFantasyPlayersWithTournamentId(id);
                 Player newPlayer;
@@ -97,7 +111,7 @@ public class FantasyTeamController extends Controller {
 
 
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
-            return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
+            return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
         }else{
             return redirect("/PageNotFound");
         }
@@ -138,7 +152,7 @@ public class FantasyTeamController extends Controller {
         }
         List<Integer> playerIds = new ArrayList<Integer>();
         if(filledForm.field("GoalKeeper").value().equals("-")) {
-            filledForm.reject("GoalKeeper", "Team Already Built");
+            filledForm.reject("Enroll", "Team Already Built");
         }
         else{
             playerIds.add(Integer.parseInt(filledForm.field("GoalKeeper").value()));
@@ -212,16 +226,21 @@ public class FantasyTeamController extends Controller {
             playerIds.add(Integer.parseInt(filledForm.field("Forward2").value()));
         }
 
+        String message = "";
+        boolean isFull = false;
+
+
         if(!filledForm.hasErrors()){
             for(int i = 0; i < playerIds.size(); i++){
                 for(int j = 0; j < playerIds.size(); j++){
                     if(i != j){
                         if(playerIds.get(i).equals(playerIds.get(j))){
-                            return badRequest(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
+                            return badRequest(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
                         }
                     }
                 }
             }
+
 
             for(int PID : playerIds){
                 fantasyPlayer.setPlayerId(PID);
@@ -250,12 +269,30 @@ public class FantasyTeamController extends Controller {
 
 
         }else{
-            return badRequest(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
+            List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByTournamentId(tournamentId);
+            if(fantasyTeams.size() >= t.getMaxEntries()){
+                message = "Tournament is full " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+                isFull = true;
+            }
+            else{
+                isFull = false;
+                message = "Tournament is open for enrollment " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+            }
+            return badRequest(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
         }
 
+        List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByTournamentId(tournamentId);
+        if(fantasyTeams.size() >= t.getMaxEntries()){
+            message = "Tournament is full " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+            isFull = true;
+        }
+        else{
+            isFull = false;
+            message = "Tournament is open for enrollment " + fantasyTeams.size() + "/" + t.getMaxEntries() + " teams enrolled.";
+        }
 
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().after(today) && t.getEndDate().after(today)) {
-            return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams()));
+            return ok(tournament.render(t, players, usersFantasyPlayers, teamService.getTeams(), message, isFull));
         }else{
             return redirect("/PageNotFound");
         }
