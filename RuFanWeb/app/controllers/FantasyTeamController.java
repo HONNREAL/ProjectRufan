@@ -8,6 +8,7 @@ import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Game;
+import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.Tournament;
@@ -20,6 +21,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.myFantasyTeams;
 import views.html.tournament;
 
 import java.util.ArrayList;
@@ -296,5 +298,16 @@ public class FantasyTeamController extends Controller {
         }else{
             return redirect("/PageNotFound");
         }
+    }
+
+    public Result myFantasyTeams(){
+        int userId = userService.getUserByUsername(session().get("username")).getId();
+
+        List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByUserId(userId);
+        List<FantasyPlayer> fantasyPlayers = fantasyPlayerService.getFantasyPlayersWithUserId(userId);
+        List<Tournament> tournaments = tournamentService.getTournaments();
+        List<Team> teams = teamService.getTeams();
+
+        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, tournaments, teams, userId));
     }
 }

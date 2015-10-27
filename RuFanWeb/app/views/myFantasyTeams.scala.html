@@ -1,0 +1,48 @@
+@(fantasyTeams: List[is.rufan.fantasyteam.domain.FantasyTeam],fantasyPlayers: List[is.rufan.fantasyplayer.domain.FantasyPlayer], players: List[is.rufan.player.domain.Player],tournaments: List[is.rufan.tournament.domain.Tournament], teams: List[is.rufan.team.domain.Team],userId: Integer)
+@import play.api.Play.current
+
+
+@main("Rufan - My Fantasy Teams") {
+  @if(session.get("username")) {
+    @for(fantasyTeam <- fantasyTeams){
+      @for(tournament <- tournaments){
+        @if(tournament.getId.equals(fantasyTeam.getTournamentId)){
+          <h3>Tournament Name: @tournament.getName</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Plays For</th>
+                <th>Position</th>
+              </tr>
+              @for(fantasyPlayer <- fantasyPlayers){
+                @if(fantasyPlayer.getUserId == userId & fantasyPlayer.getTournamentId == tournament.getId){
+                  @for(player <- players){
+                    @if(player.getPlayerId == fantasyPlayer.getPlayerId){
+                      <tr>
+                        <td>@player.getFirstName @player.getLastName</td>
+                        @for(team <- teams){
+                          @if(player.getTeamId == team.getTeamId){
+                            <td>@team.getDisplayName</td>
+                          }
+                        }
+                        <td>
+                        @for(position <- player.getPositions){
+                          @position.getAbbreviation
+                        }
+                        </td>
+                      </tr>
+                    }
+                  }
+                }
+              }
+            </table>
+          </div>
+        }
+      }
+    }
+
+  } else {
+    Not Logged In.
+  }
+}
