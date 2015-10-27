@@ -20,6 +20,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.myFantasyTeams;
 import views.html.tournament;
 
 import java.util.ArrayList;
@@ -296,5 +297,15 @@ public class FantasyTeamController extends Controller {
         }else{
             return redirect("/PageNotFound");
         }
+    }
+
+    public Result myFantasyTeams(){
+        int userId = userService.getUserByUsername(session().get("username")).getId();
+
+        List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByUserId(userId);
+        List<FantasyPlayer> fantasyPlayers = fantasyPlayerService.getFantasyPlayersWithUserId(userId);
+        List<Tournament> tournaments = tournamentService.getTournaments();
+
+        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, tournaments, userId));
     }
 }
