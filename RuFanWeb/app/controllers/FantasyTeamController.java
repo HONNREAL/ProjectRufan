@@ -25,7 +25,8 @@ import java.util.List;
 import static play.data.Form.form;
 
 /**
- * Created by Keli on 26 / 10 / 15.
+ * Controller that controls the flow of data into the fantasyTeam object ands
+ * updates the tournament view for rendering.
  */
 public class FantasyTeamController extends Controller {
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
@@ -114,7 +115,7 @@ public class FantasyTeamController extends Controller {
                 }
             }
         }
-
+// fantacyPlayerService.addPlayer()
         if(t != null && t.getEndDate() != null && t.getStartDate() != null && t.getStartDate().before(today) && t.getEndDate().after(today)) {
             return ok(tournament.render(t, players, usersFantasyPlayers));
         }else{

@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Controller controls the data flow into the Tournament model object
+ * and updates the view index.
+ */
 public class Application extends Controller {
 
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
@@ -33,8 +37,9 @@ public class Application extends Controller {
         gameService = (GameService) gctx.getBean("gameService");
     }
     /**
-     *
-     * @return
+     * Search for active tournaments, add them to a list of active tournaments and return
+     * to view for rendering.
+     * @return List of active tournaments.
      */
     public Result index()
     {
@@ -54,6 +59,10 @@ public class Application extends Controller {
         return ok(index.render(activeTournaments));
     }
 
+    /**
+     * If a page is not found, this function returns the notfound view for rendering.
+     * @return notfound view for rendering
+     */
     public Result PageNotFound()
     {
         return ok(notfound.render());
