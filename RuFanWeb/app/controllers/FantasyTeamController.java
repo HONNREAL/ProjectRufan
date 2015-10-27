@@ -8,6 +8,7 @@ import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Game;
+import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.Tournament;
@@ -305,7 +306,8 @@ public class FantasyTeamController extends Controller {
         List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByUserId(userId);
         List<FantasyPlayer> fantasyPlayers = fantasyPlayerService.getFantasyPlayersWithUserId(userId);
         List<Tournament> tournaments = tournamentService.getTournaments();
+        List<Team> teams = teamService.getTeams();
 
-        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, tournaments, userId));
+        return ok(myFantasyTeams.render(fantasyTeams, fantasyPlayers, players, tournaments, teams, userId));
     }
 }
