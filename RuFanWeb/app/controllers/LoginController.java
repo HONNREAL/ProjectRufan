@@ -9,9 +9,12 @@ import play.mvc.*;
 import static play.data.Form.form;
 import views.html.login;
 
-
 /**
  * Log in/out controller, sets or clears the session's username and displayName.
+ * Invoked by the routes: localhost:9000/login
+ *                        localhost:9000/logout
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
  */
 public class LoginController extends UserController
 {

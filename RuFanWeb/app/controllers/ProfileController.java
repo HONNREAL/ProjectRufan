@@ -10,24 +10,27 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Result;
 import views.html.profile;
-
-import java.text.ParseException;
 import java.util.List;
-
+import java.util.logging.Logger;
 import static play.data.Form.*;
 
 /**
  * Controller that controls data flow to object User.
+ * Invoked by the route: localhost:9000/profile
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
  */
 public class ProfileController extends UserController {
 
     final static Form<UserRegistration> signupForm = form(UserRegistration.class);
 
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/teamapp.xml");
+    Logger log = Logger.getLogger(this.getClass().getName());
 
     /**
-     *
-     * @return
+     * Get user information to display on profile page and provide a signup form.
+     * @return Provide view profile.scala.html with a list of teams, a signup form,
+     * the session's user and "blurred" card number for rendering, status 200 OK.
      */
     public Result index()
     {
@@ -53,7 +56,7 @@ public class ProfileController extends UserController {
     /**
      * Validate the credit card form and update the card information and
      * render the profile view with the information.
-     * @return
+     * @return Provide view profile.scala.html with with updated info from form, status 200 OK or 400 BadRequest.
      */
     public Result update() {
         Form<UserRegistration> filledForm = signupForm.bindFromRequest();
@@ -63,6 +66,7 @@ public class ProfileController extends UserController {
         TeamService teamService = (TeamService) tctx.getBean("teamService");
         List<Team> teams = teamService.getTeams();
         String lastcardnum = "                ";
+        // If anything about credit card has been filled, everything has to be.
         if (!filledForm.field("cardNumber").value().isEmpty()
                 || filledForm.field("creditCardType").value() != null
                 || !filledForm.field("securityCode").value().isEmpty()
@@ -102,18 +106,18 @@ public class ProfileController extends UserController {
                 user.setCardType(filledForm.field("creditCardType").value());
             }
          }
-
+        // If a team has been chosen from dropdown, parse the team ID and set it for the user.
         if(!filledForm.field("favteam").value().toString().equals("-")) {
             int favTeamId = 0;
             try{
                 favTeamId = Integer.parseInt(filledForm.field("favteam").value());
             }catch(Exception e){
-                //return badRequest(profile.render(teams, filledForm, user));
+                log.severe("Could not parse teamID from dropdownlist in profile");
+                return badRequest(profile.render(teams, filledForm, user, lastcardnum.substring(12)));
             }
             if(!filledForm.hasErrors()) {
                 user.setFavTeamId(favTeamId);
             }
-
         }
 
         if(user.getCardNumber() != null){
@@ -129,7 +133,5 @@ public class ProfileController extends UserController {
             service.updateUser(user);
             return ok(profile.render(teams, signupForm, user, lastcardnum.substring(12)));
         }
-
-
     }
 }

@@ -5,14 +5,11 @@ import is.rufan.fantasyplayer.service.FantasyPlayerService;
 import is.rufan.fantasyteam.domain.FantasyTeam;
 import is.rufan.fantasyteam.service.FantasyTeamService;
 import is.rufan.player.domain.Player;
-import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
-import is.rufan.team.domain.Game;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.Tournament;
-import is.rufan.tournament.domain.TournamentGame;
 import is.rufan.tournament.service.TournamentGameService;
 import is.rufan.tournament.service.TournamentService;
 import is.rufan.user.service.UserService;
@@ -23,7 +20,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.myFantasyTeams;
 import views.html.tournament;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +29,10 @@ import static play.data.Form.form;
 /**
  * Controller that controls the flow of data into the fantasyTeam object ands
  * updates the tournament view for rendering.
+ * Invoked by the routes: localhost:9000/tournaments/id <-- tournament ID
+ *                        localhost:9000/MyFantasyTeams
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
  */
 public class FantasyTeamController extends Controller {
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
@@ -68,7 +68,7 @@ public class FantasyTeamController extends Controller {
         fantasyTeamService = (FantasyTeamService) ftctx.getBean("fantasyTeamService");
         /* Get Playerlist in the constructor for FantasyTeamController
          * so that we only need to fetch the list once, since it takes
-         * over 10 seconds to fetch.
+         * long to fetch.
          */
         players = playerService.getPlayers();
     }
@@ -231,7 +231,6 @@ public class FantasyTeamController extends Controller {
         String message = "";
         boolean isFull = false;
 
-
         if(!filledForm.hasErrors()){
             for(int i = 0; i < playerIds.size(); i++){
                 for(int j = 0; j < playerIds.size(); j++){
@@ -243,12 +242,10 @@ public class FantasyTeamController extends Controller {
                 }
             }
 
-
             for(int PID : playerIds){
                 fantasyPlayer.setPlayerId(PID);
                 fantasyPlayerService.addFantasyPlayer(fantasyPlayer);
             }
-
 
             usersFantasyPlayers.clear();
             tournamentFantasyPlayers.clear();
@@ -268,8 +265,6 @@ public class FantasyTeamController extends Controller {
                     }
                 }
             }
-
-
         }else{
             List<FantasyTeam> fantasyTeams = fantasyTeamService.getFantasyTeamsByTournamentId(tournamentId);
             if(fantasyTeams.size() >= t.getMaxEntries()){

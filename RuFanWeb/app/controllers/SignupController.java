@@ -4,22 +4,33 @@ import is.rufan.user.domain.UserRegistration;
 import is.rufan.user.service.UserService;
 import play.mvc.*;
 import play.data.*;
-
 import views.html.signup;
 import views.html.summary;
-
 import static play.data.Form.*;
 
-
+/**
+ * Validates login credentials.
+ * Invoked by the route: localhost:9000/signup
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
+ */
 public class SignupController extends UserController
 {
   final static Form<UserRegistration> signupForm = form(UserRegistration.class);
 
+  /**
+   * Blank signup form.
+   * @return Provide view signup.scala.html with a blank signup form, status 200 OK.
+   */
   public Result blank()
   {
     return ok(signup.render(signupForm));
   }
 
+  /**
+   * Validate sign up credentials.
+   * @return Provide view summary.scala.html with the user created, status 200 OK.
+   */
   public Result signup()
   {
     Form<UserRegistration> filledForm = signupForm.bindFromRequest();
@@ -50,17 +61,6 @@ public class SignupController extends UserController
     {
       filledForm.reject("password", "The password is too short");
     }
-    /*
-    if (filledForm.field("creditCardNumber").value().length() < 16)
-    {
-      filledForm.reject("creditCardNumber", "The card number is too short");
-    }
-
-    if (filledForm.field("creditCardType").value().isEmpty())
-    {
-      filledForm.reject("creditCardType", "Please choose a card type");
-    }
-    */
 
     if (filledForm.hasErrors())
     {

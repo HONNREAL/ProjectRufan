@@ -2,13 +2,10 @@ package controllers;
 
 import is.rufan.team.service.GameService;
 import is.rufan.tournament.domain.Tournament;
-import is.rufan.tournament.domain.TournamentGame;
 import is.rufan.tournament.service.TournamentGameService;
 import is.rufan.tournament.service.TournamentService;
-import is.rufan.user.domain.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import play.*;
 import play.mvc.*;
 
 import views.html.*;
@@ -20,6 +17,9 @@ import java.util.List;
 /**
  * Controller controls the data flow into the Tournament model object
  * and updates the view index.
+ * Invoked by the route: localhost:9000/
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
  */
 public class Application extends Controller {
 
@@ -42,7 +42,7 @@ public class Application extends Controller {
     /**
      * Search for active tournaments, add them to a list of active tournaments and return
      * to view for rendering.
-     * @return Render index with list of active tournaments, status 200 OK.
+     * @return Provide index.scala.htm with list of active tournaments for rendering, status 200 OK.
      */
     public Result index()
     {

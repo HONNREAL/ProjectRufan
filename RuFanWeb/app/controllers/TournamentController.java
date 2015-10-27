@@ -17,16 +17,27 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Keli on 22 / 10 / 15.
+ * Constructs two lists of active and inactive tournaments and provides the view
+ * tournaments with it for rendering.
+ * Invoked by the route: localhost:9000/tournaments
+ * @author Gunnar Orri Kjartansson
+ * @author Þorkell Viktor Þorsteinsson
  */
 public class TournamentController extends Controller {
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
     private TournamentService tournamentService;
 
+    /**
+     * Constructor, get tournament service.
+     */
     public TournamentController() {
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
     }
 
+    /**
+     * Seperate active tournamnets from inactive.
+     * @return Provide view tournaments.scala.html with the lists for rendering, status 200 OK.
+     */
     public Result index()
     {
 
