@@ -77,7 +77,7 @@ public class FantasyTeamController extends Controller {
     }
 
     /**
-     * 
+     *
      * @param id Tournament ID
      * @return provide view tournament.scala.html with data for rendering, status 200 OK
      * or page not found
@@ -128,6 +128,12 @@ public class FantasyTeamController extends Controller {
         }
     }
 
+    /**
+     * For building a fantasy team.
+     * @param tournamentId Tournament ID
+     * @return Provide tournament view with data for rendering, status 200 OK
+     * or redirect.
+     */
     public Result buildFantasyTeam(int tournamentId){
 
         Tournament t = tournamentService.getTournamentById(tournamentId);
@@ -150,7 +156,7 @@ public class FantasyTeamController extends Controller {
         fantasyPlayer.setUserId(userId);
 
         Form<FantasyPlayer> filledForm = fantasyTeamForm.bindFromRequest();
-
+        // Add all players to fantasy team.
         for(FantasyPlayer fp : tournamentFantasyPlayers){
             if(fp.getUserId() == userId ){
                 for(Player p : players){
@@ -158,19 +164,19 @@ public class FantasyTeamController extends Controller {
                         usersFantasyPlayers.add(p);
                     }
                 }
-                filledForm.reject("GoalKeeper", "Team Already Built");
+                filledForm.reject("Enroll", "Team Already Built");
             }
         }
         List<Integer> playerIds = new ArrayList<Integer>();
         if(filledForm.field("GoalKeeper").value().equals("-")) {
-            filledForm.reject("Enroll", "Team Already Built");
+            filledForm.reject("Goalkeeper", "Team Already Built");
         }
         else{
             playerIds.add(Integer.parseInt(filledForm.field("GoalKeeper").value()));
         }
 
         if(filledForm.field("Defender1").value().equals("-")) {
-            filledForm.reject("GoalKeeper", "Team Already Built");
+            filledForm.reject("Defender1", "Team Already Built");
         }
         else{
             playerIds.add(Integer.parseInt(filledForm.field("Defender1").value()));
@@ -304,6 +310,11 @@ public class FantasyTeamController extends Controller {
         }
     }
 
+    /**
+     * Find active teams that are linked to an active tournament to send to
+     * myFantasyTeams for rendering.
+     * @return Provide myFantasyTeams view with data for rendering, status 200 OK.
+     */
     public Result myFantasyTeams(){
         int userId = userService.getUserByUsername(session().get("username")).getId();
 
