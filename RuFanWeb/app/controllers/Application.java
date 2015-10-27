@@ -31,6 +31,9 @@ public class Application extends Controller {
     private TournamentGameService tournamentGameService;
     private GameService gameService;
 
+    /**
+     * Constructor for Application. Set required services using beans.
+     */
     public Application(){
         tournamentService = (TournamentService) tctx.getBean("tournamentService");
         tournamentGameService = (TournamentGameService) tgctx.getBean("tournamentGameService");
@@ -39,7 +42,7 @@ public class Application extends Controller {
     /**
      * Search for active tournaments, add them to a list of active tournaments and return
      * to view for rendering.
-     * @return List of active tournaments.
+     * @return Render index with list of active tournaments, status 200 OK.
      */
     public Result index()
     {
@@ -61,7 +64,7 @@ public class Application extends Controller {
 
     /**
      * If a page is not found, this function returns the notfound view for rendering.
-     * @return notfound view for rendering
+     * @return notfound view for rendering, status 200 OK
      */
     public Result PageNotFound()
     {

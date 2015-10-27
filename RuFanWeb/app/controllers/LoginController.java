@@ -1,35 +1,36 @@
 package controllers;
 
-
-import is.rufan.tournament.domain.Tournament;
-import is.rufan.tournament.service.TournamentService;
-import is.rufan.user.data.UserNotFoundException;
 import is.rufan.user.domain.User;
 import is.rufan.user.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.*;
 import play.mvc.*;
-
 import static play.data.Form.form;
-
-import views.html.index;
 import views.html.login;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
+/**
+ * Log in/out controller, sets or clears the session's username and displayName.
+ */
 public class LoginController extends UserController
 {
   final static Form<User> loginForm = form(User.class);
   protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/tournamentapp.xml");
 
+  /**
+   * A blank login form.
+   * @return login view for rendering with the empty loginForm, status 200 OK
+   */
   public Result blank()
   {
     return ok(login.render(loginForm));
   }
 
+  /**
+   * Validate log in form and set the session's user and display name.
+   * @return redirect to index
+   */
   public Result login()
   {
     Form<User> filledForm = loginForm.bindFromRequest();
@@ -56,6 +57,10 @@ public class LoginController extends UserController
     return redirect("/");
   }
 
+  /**
+   * Handle logging out a user, i.e. clear the session.
+   * @return redirect to index.
+   */
   public Result logout()
   {
     session().clear();

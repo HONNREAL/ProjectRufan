@@ -17,7 +17,7 @@ import java.util.List;
 import static play.data.Form.*;
 
 /**
- * Created by Keli on 21 / 10 / 15.
+ * Controller that controls data flow to object User.
  */
 public class ProfileController extends UserController {
 
@@ -25,6 +25,10 @@ public class ProfileController extends UserController {
 
     protected ApplicationContext tctx = new FileSystemXmlApplicationContext("/conf/teamapp.xml");
 
+    /**
+     *
+     * @return
+     */
     public Result index()
     {
         String lastcardnum = "                ";
@@ -43,6 +47,11 @@ public class ProfileController extends UserController {
         return ok(profile.render(teams, signupForm, user, lastcardnum.substring(12)));
     }
 
+    /**
+     * Validate the credit card form and update the card information and
+     * render the profile view with the information.
+     * @return
+     */
     public Result update() {
         Form<UserRegistration> filledForm = signupForm.bindFromRequest();
         UserService service = (UserService) ctx.getBean("userService");
