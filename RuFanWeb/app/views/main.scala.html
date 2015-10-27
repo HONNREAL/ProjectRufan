@@ -31,8 +31,9 @@
               <a href="/MyFantasyTeams">MyFantasyTeams</a>
             </li>
             <li>
-              <a href="@routes.LoginController.logout()">Logout</a>
+              <a href="@routes.LoginController.logout()">Logout from @session.get("username")</a>
             </li>
+
           } else {
             <li class="@("active".when(nav == "signup"))">
               <a href="@routes.SignupController.blank()">Sign up</a>
